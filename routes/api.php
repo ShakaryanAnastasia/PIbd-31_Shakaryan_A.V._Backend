@@ -16,6 +16,6 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::middleware('auth:api')->get('/rooms',  function (Request $request) {
-    return $request->user();
-});
+
+//отдаем список комнат(ленту)
+Route::resource('/rooms', 'RoomsController');

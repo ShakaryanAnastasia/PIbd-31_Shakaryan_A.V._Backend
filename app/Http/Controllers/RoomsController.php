@@ -14,22 +14,12 @@ class RoomsController extends Controller
      */
     public function index()
     {
-        $list = Room::all();
+        $list = Room::with('images')->get();
         $status = '200';
         $data = compact('list', 'status');
-
         return response()->json($data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -39,10 +29,34 @@ class RoomsController extends Controller
      */
     public function store(Request $request)
     {
-        $room = Room::create($request->all());
-        $status = '200';
-        $data = compact('room','status');
-
+        $validator = Validator::make($request->all(), [
+            'description' => 'required',
+            'images' => 'required',
+            // 'images.*' => 'mimes:png,gif,jpeg',
+        ], [
+            'required' => 'Обязательное поле',
+        ]);
+        if($validator->passes()) {
+            //сохранять в бд
+            $room = Room::create([
+                'description' => $request->input('description')
+            ]);
+            $images = $request->input('images');
+            $room->images()->createMany([
+                [
+                    'original' => $images[0],
+                ],
+                [
+                    'original' => $images[1],
+                ]
+            ]);
+            $status = '201';
+            $list = $room->id;
+        } else {
+            $status = '422';
+            $list = $validator->errors();
+        }
+        $data = compact('list', 'status');
         return response()->json($data);
     }
 
@@ -54,22 +68,11 @@ class RoomsController extends Controller
      */
     public function show($id)
     {
-        $room = Room::find($id);
-        $status = '200';
-        $data = compact('room','status');
-
+        $room = Room::with('images')->find($id);
+        $list = $room;
+        $status = $room ? '200' : '404';
+        $data = compact('list','status');
         return response()->json($data);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -85,7 +88,6 @@ class RoomsController extends Controller
         $room->update($request->all());
         $status = '200';
         $data = compact('room','status');
-
         return response()->json($data);
     }
 
@@ -98,9 +100,9 @@ class RoomsController extends Controller
     public function destroy($id)
     {
         $room = Room::findOrFail($id);
-        $room->delete;
+        $room->images()->delete();
+        $room->delete($id);
         $status = '204';
-
         return response()->json($status);
     }
 }

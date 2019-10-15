@@ -9,4 +9,8 @@ class Room extends Model
     protected $fillable = [
          'description'
     ];
+    public function images()
+    {
+        return $this->hasMany(Image::class);
+    }
 }
