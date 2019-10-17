@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Room;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class RoomsController extends Controller
 {
@@ -17,7 +18,8 @@ class RoomsController extends Controller
         $list = Room::with('images')->get();
         $status = '200';
         $data = compact('list', 'status');
-        return response()->json($data);
+        //return response()->json($data);
+        return response()->json($list);
     }
 
 
@@ -30,7 +32,9 @@ class RoomsController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'title' => 'required',
             'description' => 'required',
+            'price'=> 'required',
             'images' => 'required',
             // 'images.*' => 'mimes:png,gif,jpeg',
         ], [
@@ -39,17 +43,17 @@ class RoomsController extends Controller
         if($validator->passes()) {
             //сохранять в бд
             $room = Room::create([
-                'description' => $request->input('description')
+                'title' => $request->input('title'),
+                'description' => $request->input('description'),
+                'price' => $request->input('price')
             ]);
+
             $images = $request->input('images');
-            $room->images()->createMany([
-                [
-                    'original' => $images[0],
-                ],
-                [
-                    'original' => $images[1],
-                ]
-            ]);
+            for($i = 0; $i < count($images); ++$i) {
+                $room->images()->create([
+                'original' => $images[$i]
+                ]);
+            }
             $status = '201';
             $list = $room->id;
         } else {
@@ -85,8 +89,35 @@ class RoomsController extends Controller
     public function update(Request $request, $id)
     {
         $room = Room::findOrFail($id);
-        $room->update($request->all());
-        $status = '200';
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'description' => 'required',
+            'price'=> 'required',
+            'images' => 'required',
+            // 'images.*' => 'mimes:png,gif,jpeg',
+        ], [
+            'required' => 'Обязательное поле',
+        ]);
+        if($validator->passes()) {
+            //сохранять в бд
+            $room->update([
+                'title' => $request->input('title'),
+                'description' => $request->input('description'),
+                'price' => $request->input('price')
+            ]);
+
+            $images = $request->input('images');
+            for ($i = 0; $i < count($images); ++$i) {
+                $room->images()->update([
+                    'original' => $images[$i]
+                ]);
+            }
+            $status = '200';
+        }
+        else {
+                $status = '422';
+                $room = $validator->errors();
+            }
         $data = compact('room','status');
         return response()->json($data);
     }

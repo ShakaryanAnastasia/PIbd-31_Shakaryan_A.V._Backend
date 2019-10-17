@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Room extends Model
 {
     protected $fillable = [
-         'description'
+         'title','description', 'price'
     ];
     public function images()
     {
