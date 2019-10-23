@@ -18,8 +18,8 @@ class RoomsController extends Controller
         $list = Room::with('images')->get();
         $status = '200';
         $data = compact('list', 'status');
-        //return response()->json($data);
-        return response()->json($list);
+        return response()->json($data);
+       // return response()->json($list);
     }
 
 
@@ -35,7 +35,7 @@ class RoomsController extends Controller
             'title' => 'required',
             'description' => 'required',
             'price'=> 'required',
-            'images' => 'required',
+            //'images' => 'required',
             // 'images.*' => 'mimes:png,gif,jpeg',
         ], [
             'required' => 'Обязательное поле',
@@ -51,7 +51,7 @@ class RoomsController extends Controller
             $images = $request->input('images');
             for($i = 0; $i < count($images); ++$i) {
                 $room->images()->create([
-                'original' => $images[$i]
+                'original' => $images[$i]["original"]
                 ]);
             }
             $status = '201';
@@ -93,7 +93,7 @@ class RoomsController extends Controller
             'title' => 'required',
             'description' => 'required',
             'price'=> 'required',
-            'images' => 'required',
+           // 'images' => 'required',
             // 'images.*' => 'mimes:png,gif,jpeg',
         ], [
             'required' => 'Обязательное поле',
@@ -109,7 +109,7 @@ class RoomsController extends Controller
             $images = $request->input('images');
             for ($i = 0; $i < count($images); ++$i) {
                 $room->images()->update([
-                    'original' => $images[$i]
+                    'original' => $images[$i]["original"]
                 ]);
             }
             $status = '200';
