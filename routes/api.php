@@ -25,4 +25,4 @@ Route::group(['namespace' => 'Api'], function () {
     });
 });
 //отдаем список комнат(ленту)
-Route::resource('/rooms', 'RoomsController');
+Route::resource('/rooms', 'RoomsController')->middleware('auth:api');

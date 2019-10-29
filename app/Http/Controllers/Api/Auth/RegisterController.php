@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
-    //public function __invoke(RegisterFormRequest $request)
     public function __invoke(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -35,9 +34,7 @@ class RegisterController extends Controller
             Auth::attempt($credentials);
 
             $token = Auth::user()->createToken(config('app.name'));
-            $token->token->expires_at = $request->remember_me ?
-                Carbon::now()->addMonth() :
-                Carbon::now()->addDay();
+            $token->token->expires_at = Carbon::now()->addYears(7);
 
             $token->token->save();
             $status = '200';
