@@ -35,14 +35,15 @@ class RegisterController extends Controller
 
             $token = Auth::user()->createToken(config('app.name'));
             $token->token->expires_at = Carbon::now()->addYears(7);
-
             $token->token->save();
+
             $status = '200';
             $message = 'You were successfully registered and authorized.';
             $list = [
                 'token_type' => 'Bearer',
                 'token' => $token->accessToken,
-                'expires_at' => Carbon::parse($token->token->expires_at)->toDateTimeString()
+                'expires_at' => Carbon::parse($token->token->expires_at)->toDateTimeString(),
+                'user_name' => Auth::user()->name
             ];
         } else {
             $status = '422';

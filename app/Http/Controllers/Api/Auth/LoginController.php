@@ -31,10 +31,14 @@ class LoginController extends Controller
 
         $token->token->save();
 
-        return response()->json([
+        $list = [
             'token_type' => 'Bearer',
             'token' => $token->accessToken,
-            'expires_at' => Carbon::parse($token->token->expires_at)->toDateTimeString()
-        ], 200);
+            'expires_at' => Carbon::parse($token->token->expires_at)->toDateTimeString(),
+            'user_name' => Auth::user()->name
+        ];
+        $status = '200';
+        $data = compact('list', 'status');
+        return response()->json($data);
     }
 }
