@@ -42,7 +42,6 @@ class RegisterController extends Controller
             $list = [
                 'token_type' => 'Bearer',
                 'token' => $token->accessToken,
-                'expires_at' => Carbon::parse($token->token->expires_at)->toDateTimeString(),
                 'user_name' => Auth::user()->name
             ];
         } else {

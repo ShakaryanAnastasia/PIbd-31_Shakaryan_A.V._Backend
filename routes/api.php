@@ -26,3 +26,9 @@ Route::group(['namespace' => 'Api'], function () {
 });
 //отдаем список комнат(ленту)
 Route::resource('/rooms', 'RoomsController')->middleware('auth:api');
+
+Route::group(['namespace' => 'Auth'], function () {
+    Route::get('/login/{provider}', 'SocialController@redirectToProvider');
+    Route::get('/login/{provider}/callback', 'SocialController@handleProviderCallback');
+    Route::get('/login/{provider}/getAuth', 'SocialController@getAuth');
+});
