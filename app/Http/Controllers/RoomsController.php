@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class RoomsController extends Controller
 {
@@ -48,12 +49,12 @@ class RoomsController extends Controller
                 'price' => $request->input('price')
             ]);
 
-            $images = $request->input('images');
-            for($i = 0; $i < count($images); ++$i) {
-                $room->images()->create([
-                'original' => $images[$i]["original"]
-                ]);
-            }
+//            $images = $request->input('images');
+//                for ($i = 0; $i < count($images); $i++) {
+//                    $room->images()->create([
+//                        'original' => $images[$i]["original"],
+//                    ]);
+//                }
             $status = '201';
             $list = $room->id;
         } else {
@@ -105,14 +106,15 @@ class RoomsController extends Controller
                 'description' => $request->input('description'),
                 'price' => $request->input('price')
             ]);
+//            $images = $request->input('images');
+//            for ($i = 0; $i < count($images); ++$i) {
+//                $doc->images()->update([
+//                    'original' => $images[$i]["original"]
+//                ]);
+//            }
 
-            $images = $request->input('images');
-            for ($i = 0; $i < count($images); ++$i) {
-                $room->images()->update([
-                    'original' => $images[$i]["original"]
-                ]);
-            }
-            $status = '200';
+
+            $status = '201';
         }
         else {
                 $status = '422';
@@ -131,6 +133,11 @@ class RoomsController extends Controller
     public function destroy($id)
     {
         $room = Room::findOrFail($id);
+        $images = $room->images()->pluck('original');
+        foreach ($images as $image){
+            Storage::disk('dropbox')->delete(substr($image, 1));
+            Storage::disk('dropbox')->deleteDirectory(explode('/',trim(substr($image, 1)))[0]);
+        }
         $room->images()->delete();
         $room->delete($id);
         $status = '204';
