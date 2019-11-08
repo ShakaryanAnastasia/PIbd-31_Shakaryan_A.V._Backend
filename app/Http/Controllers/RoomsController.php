@@ -6,6 +6,8 @@ use App\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+
 
 class RoomsController extends Controller
 {
@@ -142,5 +144,25 @@ class RoomsController extends Controller
         $room->delete($id);
         $status = '204';
         return response()->json($status);
+    }
+
+    public function search(Request $request){
+        try {
+            $text = mb_strtolower($request->input('text'), 'UTF-8');
+            $text = "'$text'";
+            $query = "CALL search(" . $text . ");";
+            $doctors = DB::select($query);
+
+            $status = '200';
+            $list = $doctors;
+        }
+        catch(Exception $e){
+            $status = '422';
+            $list = $e->getMessage();
+        }
+
+        $data = compact('list', 'status');
+        return response()->json($data);
+
     }
 }

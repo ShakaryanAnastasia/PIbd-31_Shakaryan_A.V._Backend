@@ -33,3 +33,4 @@ Route::group(['namespace' => 'Auth'], function () {
     Route::get('/login/{provider}/getAuth', 'SocialController@getAuth');
 });
 Route::post('/upload_to_dropbox','DropboxController@uploadToDropboxFile')->middleware('auth:api');
+Route::post('/search','RoomsController@search')->middleware('auth:api');
