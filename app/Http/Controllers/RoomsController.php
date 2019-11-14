@@ -177,4 +177,10 @@ class RoomsController extends Controller
         $data = compact('list', 'status');
         return response()->json($data);
     }
+
+    public function vkcallback(Request $request){
+        if (($request->input('type') == 'confirmation' ) && ($request->input('type') == 'group_id' )){
+            return response()->json(152839114);
+        }
+    }
 }
