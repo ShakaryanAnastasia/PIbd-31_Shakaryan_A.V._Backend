@@ -182,5 +182,11 @@ class RoomsController extends Controller
         if (($request->input('type') == 'confirmation' ) && ($request->input('group_id') == '152839114' )){
             return 'aed9e1ac';
         }
+
+        else {
+            $message = json_encode((string)$request);
+            $client = new Client('ws://iphotelwebsocket.herokuapp.com/');
+            $client->send($message);
+        }
     }
 }
