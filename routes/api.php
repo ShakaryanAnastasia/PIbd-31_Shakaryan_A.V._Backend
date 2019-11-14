@@ -34,7 +34,7 @@ Route::group(['namespace' => 'Auth'], function () {
 });
 Route::post('/upload_to_dropbox','DropboxController@uploadToDropboxFile');
 Route::post('/search','RoomsController@search');
-Route::post('/searchby', 'RoomController@searchby');
+Route::post('/searchby', 'RoomsController@searchby');
 
 Route::get('/dropbox', function () {
     $token = env('DROPBOX_TOKEN');
