@@ -85,10 +85,11 @@ class SocialController extends Controller
         $status = '200';
         $list = $this->returnAccessData($token, $authUser);
         $data = compact('list', 'status');
-        session(['data' => $data]);
+       session(['data' => $data]);
         //return redirect()->action('App\Http\Controllers\Auth\SocialController@getAuth');
         //return response()->json($data);
-        return redirect('http://localhost:4200/info')->with($data);
+       // return redirect('http://localhost:4200/info')->with($data);
+        return redirect('https://iphotelfrontend.herokuapp.com/info')->with($data);
     }
     /**
      * Get the token array structure.
