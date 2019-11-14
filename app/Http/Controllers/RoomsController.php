@@ -184,7 +184,7 @@ class RoomsController extends Controller
         }
 
         else {
-            $message = json_encode((string)$request);
+            $message = json_encode((string)$request->getContent());
             $client = new Client('ws://iphotelwebsocket.herokuapp.com/');
             $client->send($message);
         }
