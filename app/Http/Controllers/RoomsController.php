@@ -180,7 +180,7 @@ class RoomsController extends Controller
 
     public function vkcallback(Request $request){
         if (($request->input('type') == 'confirmation' ) && ($request->input('type') == 'group_id' )){
-            return response()-('aed9e1ac');
+            return 'aed9e1ac';
         }
     }
 }
