@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use WebSocket\Client;
 
 
 class RoomsController extends Controller
@@ -21,8 +22,8 @@ class RoomsController extends Controller
         $list = Room::with('images')->get();
         $status = '200';
         $data = compact('list', 'status');
+
         return response()->json($data);
-       // return response()->json($list);
     }
 
 
@@ -50,13 +51,6 @@ class RoomsController extends Controller
                 'description' => $request->input('description'),
                 'price' => $request->input('price')
             ]);
-
-//            $images = $request->input('images');
-//                for ($i = 0; $i < count($images); $i++) {
-//                    $room->images()->create([
-//                        'original' => $images[$i]["original"],
-//                    ]);
-//                }
             $status = '201';
             $list = $room->id;
         } else {
@@ -64,6 +58,11 @@ class RoomsController extends Controller
             $list = $validator->errors();
         }
         $data = compact('list', 'status');
+
+        $message = json_encode((string)$room);
+        $client = new Client('ws://iphotelwebsocket.herokuapp.com/');
+        $client->send($message);
+
         return response()->json($data);
     }
 
@@ -96,8 +95,6 @@ class RoomsController extends Controller
             'title' => 'required',
             'description' => 'required',
             'price'=> 'required',
-           // 'images' => 'required',
-            // 'images.*' => 'mimes:png,gif,jpeg',
         ], [
             'required' => 'Обязательное поле',
         ]);
@@ -108,14 +105,6 @@ class RoomsController extends Controller
                 'description' => $request->input('description'),
                 'price' => $request->input('price')
             ]);
-//            $images = $request->input('images');
-//            for ($i = 0; $i < count($images); ++$i) {
-//                $doc->images()->update([
-//                    'original' => $images[$i]["original"]
-//                ]);
-//            }
-
-
             $status = '201';
         }
         else {
@@ -143,6 +132,11 @@ class RoomsController extends Controller
         $room->images()->delete();
         $room->delete($id);
         $status = '204';
+
+        $message = json_encode((string)$id);
+        $client = new Client('ws://iphotelwebsocket.herokuapp.com/');
+        $client->send($message);
+
         return response()->json($status);
     }
 
@@ -151,10 +145,10 @@ class RoomsController extends Controller
             $text = mb_strtolower($request->input('text'), 'UTF-8');
             $text = "'$text'";
             $query = "CALL search(" . $text . ");";
-            $doctors = DB::select($query);
+            $rooms = DB::select($query);
 
             $status = '200';
-            $list = $doctors;
+            $list = $rooms;
         }
         catch(Exception $e){
             $status = '422';
@@ -163,6 +157,24 @@ class RoomsController extends Controller
 
         $data = compact('list', 'status');
         return response()->json($data);
+    }
 
+    public function searchby(Request $request)
+    {
+        try {
+            $text = mb_strtolower($request->input('text'), 'UTF-8');
+            $text = "'$text'";
+            $query = "SELECT * FROM rooms WHERE title LIKE CONCAT('%',".$text.",'%') OR description LIKE CONCAT('%',".$text.",'%');";
+            $rooms = DB::select($query);
+
+            $status = '200';
+            $list = $rooms;
+        } catch (Exception $e) {
+            $status = '422';
+            $list = $e->getMessage();
+        }
+
+        $data = compact('list', 'status');
+        return response()->json($data);
     }
 }

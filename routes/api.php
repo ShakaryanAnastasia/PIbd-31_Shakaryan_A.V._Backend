@@ -34,3 +34,11 @@ Route::group(['namespace' => 'Auth'], function () {
 });
 Route::post('/upload_to_dropbox','DropboxController@uploadToDropboxFile')->middleware('auth:api');
 Route::post('/search','RoomsController@search')->middleware('auth:api');
+Route::post('/searchby', 'RoomController@searchby');
+
+Route::get('/dropbox', function () {
+    $token = env('DROPBOX_TOKEN');
+    $status = '200';
+    $res = compact('token', 'status');
+    return response()->json($res);
+})->middleware('auth:api');

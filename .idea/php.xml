@@ -108,6 +108,8 @@
       <path value="$PROJECT_DIR$/vendor/benjamincrozat/laravel-dropbox-driver" />
       <path value="$PROJECT_DIR$/vendor/spatie/dropbox-api" />
       <path value="$PROJECT_DIR$/vendor/spatie/flysystem-dropbox" />
+      <path value="$PROJECT_DIR$/vendor/predis/predis" />
+      <path value="$PROJECT_DIR$/vendor/textalk/websocket" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.1" />

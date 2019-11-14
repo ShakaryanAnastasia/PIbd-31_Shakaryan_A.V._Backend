@@ -16,7 +16,9 @@
         "laravel/framework": "5.8.*",
         "laravel/passport": "^7.5",
         "laravel/socialite": "^4.2",
-        "laravel/tinker": "^1.0"
+        "laravel/tinker": "^1.0",
+        "predis/predis": "^1.1",
+        "textalk/websocket": "^1.2"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
