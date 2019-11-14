@@ -42,4 +42,4 @@ Route::get('/dropbox', function () {
     $res = compact('token', 'status');
     return response()->json($res);
 });
-Route::post('/vkcallback', 'RoomsController@vkcallback');
+Route::post('/vkCallback', 'RoomsController@vkCallback');
